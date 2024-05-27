@@ -14,12 +14,18 @@ type dataBlock struct {
 
 func (d *dataBlock) Serialize() ([]byte, error) {
 	if len(d.value) == 0 {
-		return nil, errors.New("datablock should not beempty value")
+		return nil, errors.New("datablock value is empty")
 	}
 	return d.value[:], nil
 }
 
 func NewMerkleTree(mode mt.TypeConfigMode, hashs ...common.Hash) (*mt.MerkleTree, error) {
+	if len(hashs) == 0 {
+		return nil, errors.New("hashs count is 0")
+	}
+	if len(hashs) == 1 {
+		hashs = append(hashs, hashs[0])
+	}
 	dataBlocs := []mt.DataBlock{}
 	for _, hash := range hashs {
 		dataBlocs = append(dataBlocs, &dataBlock{
